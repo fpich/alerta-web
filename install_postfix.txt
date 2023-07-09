@@ -4,15 +4,17 @@ ssh nicogt@212.227.73.52
 # ouvrir port 25, 587 tcp smtp, sur le pare-feu
 
 # config dns
+
 	A	@	212.227.73.52	- 	
-	MX	@	alerta-alicia.com	- 	
-	TXT	@	"v=spf1 mx ip4:212.227.73.52 -all"	- 	
+	TXT	@	"v=spf1 a mx ip4:212.227.73.52 -all"	- 	
 	TXT	_dmarc	"v=DMARC1; p=reject; sp=none; adkim=s; aspf=s; rua=mailto:postmaster@ale..."	- 	
 	CNAME	_domainconnect	_domainconnect.ionos.com	- 	
 	TXT	dkim._domainkey	"v=DKIM1; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApdPSKw9Krv6FSXdf..."	- 	
 	A	autoconfig	212.227.73.52	- 	
 	A	autodiscover	212.227.73.52	- 	
-	A	www	212.227.73.52
+	A	mail	212.227.73.52	- 	
+	MX	mail	alerta-alicia.com	- 	
+	A	www	212.227.73.52	-  
 
 # ajouter rDNS pour le serveur
 # Réseau > Ip publique sur ionos
