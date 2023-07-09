@@ -1,0 +1,58 @@
+ssh nicogt@212.227.73.52
+212.227.73.52
+
+# ouvrir port 25, 587 tcp smtp, sur le pare-feu
+
+# config dns
+	A	@	212.227.73.52	- 	
+	MX	@	alerta-alicia.com	- 	
+	TXT	@	"v=spf1 mx ip4:212.227.73.52 -all"	- 	
+	TXT	_dmarc	"v=DMARC1; p=reject; sp=none; adkim=s; aspf=s; rua=mailto:postmaster@ale..."	- 	
+	CNAME	_domainconnect	_domainconnect.ionos.com	- 	
+	TXT	dkim._domainkey	"v=DKIM1; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApdPSKw9Krv6FSXdf..."	- 	
+	A	autoconfig	212.227.73.52	- 	
+	A	autodiscover	212.227.73.52	- 	
+	A	www	212.227.73.52
+
+# ajouter rDNS pour le serveur
+# Réseau > Ip publique sur ionos
+
+# alerta-alicia.com 3600 IN TXT "v=spf1 mx ip4:212.227.73.52 -all"
+
+# serveur hostname
+sudo hostnamectl set-hostname mail.alerta-alicia.com
+sudo nano /etc/hosts
+82.165.77.101 mail.alerta-alicia.com mail
+hostname -f
+sudo reboot
+
+# user email
+adduser info
+sudo apt install postfix -y
+sudo nano /etc/postfix/main.cf
+myorigin = alerta-alicia.com
+
+# serveur
+sudo apt update -y && sudo apt upgrade -y
+sudo apt-get install postfix mailutils ufw fail2ban -y
+
+sudo ufw allow 22/tcp
+sudo ufw allow 25/tcp
+sudo ufw allow 587/tcp
+
+# ne pas s'auto ban
+sudo nano /etc/fail2ban/jail.local
+
+# ajouter les ip
+ignoreip = 212.227.73.52
+sudo reboot
+
+# envoyer un email
+echo "This is a test." | mail -s "Test Email" test-82egudxq0@srv1.mail-tester.com
+
+# log
+sudo tail -n 100 /var/log/mail.log
+
+
+
+

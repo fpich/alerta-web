@@ -1,0 +1,33 @@
+/* styles pour les écrans de petite taille */
+@media (max-width: 767px) {
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* styles pour les écrans de taille moyenne à grande */
+@media (min-width: 768px) {
+  body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  h1 {
+    font-size: 48px;
+  }
+
+  img {
+    width: 200px;
+    height: 200px;
+    margin: 10px;
+  }
+
+  p {
+    font-size: 20px;
+    width: 90%;
+    margin: 10px;
+  }
+}
+
