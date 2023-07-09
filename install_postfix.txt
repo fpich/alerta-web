@@ -6,15 +6,14 @@ ssh nicogt@212.227.73.52
 # config dns
 
 	A	@	212.227.73.52	- 	
+	MX	@	alerta-alicia.com	- 	
 	TXT	@	"v=spf1 a mx ip4:212.227.73.52 -all"	- 	
 	TXT	_dmarc	"v=DMARC1; p=reject; sp=none; adkim=s; aspf=s; rua=mailto:postmaster@ale..."	- 	
 	CNAME	_domainconnect	_domainconnect.ionos.com	- 	
-	TXT	dkim._domainkey	"v=DKIM1; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApdPSKw9Krv6FSXdf..."	- 	
+	TXT	dkim._domainkey	"v=DKIM1; h=sha256; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQE..."	- 	
 	A	autoconfig	212.227.73.52	- 	
 	A	autodiscover	212.227.73.52	- 	
-	A	mail	212.227.73.52	- 	
-	MX	mail	alerta-alicia.com	- 	
-	A	www	212.227.73.52	-  
+	A	www	212.227.73.52	- 
 
 # ajouter rDNS pour le serveur
 # Réseau > Ip publique sur ionos
@@ -22,9 +21,9 @@ ssh nicogt@212.227.73.52
 # alerta-alicia.com 3600 IN TXT "v=spf1 mx ip4:212.227.73.52 -all"
 
 # serveur hostname
-sudo hostnamectl set-hostname mail.alerta-alicia.com
+sudo hostnamectl set-hostname alerta-alicia.com
 sudo nano /etc/hosts
-212.227.73.52 mail.alerta-alicia.com mail
+212.227.73.52 alerta-alicia.com mail
 hostname -f
 sudo reboot
 
@@ -43,6 +42,25 @@ echo "This is a test." | mail -s "Test Email" test-82egudxq0@srv1.mail-tester.co
 
 # log
 sudo tail -n 100 /var/log/mail.log
+
+# config postfix
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+myhostname = alerta-alicia.com
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+myorigin = /etc/mailname
+mydestination = alerta-alicia.com
+relayhost =
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+inet_protocols = all
+milter_default_action = accept
+milter_protocol = 2
+smtpd_milters = inet:localhost:12301
+non_smtpd_milters = inet:localhost:12301
+
 
 
 
